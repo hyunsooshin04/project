@@ -10,7 +10,7 @@
       </div>
       <div class="login_pw">
         <h4>Password</h4>
-        <input type="password" v-model="pwd" placeholder="Password">
+        <input type="password" v-model="pwd" v-on:keyup.enter="Login" placeholder="Password">
       </div>
       <div class="login_etc">
         <div class="sign_up">

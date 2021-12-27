@@ -6,13 +6,11 @@ router.all('*', (req, res, next) => {
     next();
 })
 
-
-
 router.get("/myinfo/:id", lg.myinfor);
 
 router.post("/edit/", lg.edit)
 
-router.get("/signup/:id/:pwd/:name", lg.signup);
+router.get("/signup/:id/:pwd/:name/:email/:companyname", lg.signup);
 
 router.get("/login/:id/:password", lg.login);
 

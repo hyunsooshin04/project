@@ -4,7 +4,7 @@ const {log} = require("nodemon/lib/utils");
 const conn = db.init();
 
 exports.login = (req, res) => {
-    sql = " SELECT * FROM login_id WHERE ID = ?";
+    sql = " SELECT * FROM admin_id WHERE ID = ?";
     conn.query(sql, [req.params.id], (err, log) => {
             try {
                 if (log[0].id == req.params.id) {
@@ -23,7 +23,7 @@ exports.login = (req, res) => {
 exports.signup = (req, res) => {
     let check = false;
 
-    sql = " SELECT * FROM login_id WHERE ID = ?";
+    sql = " SELECT * FROM admin_id WHERE ID = ?";
     conn.query(sql, [req.params.id], (err, log) => {
         try {
             console.log(log[0].id)
@@ -33,8 +33,8 @@ exports.signup = (req, res) => {
             check = true;
         }
         if (check) {
-            sql = " INSERT INTO  login_id (level,id, pwd, name, gender, share) values (1, ?, ?, ?, ?, ?)";
-            conn.query(sql, [req.params.id, req.params.pwd, req.params.name, "미설정", "true"], (err, req) => {
+            sql = " INSERT INTO `admin_id` (id, pwd, name, email, companyname) values (?, ?, ?, ?, ?)";
+            conn.query(sql, [req.params.id, req.params.pwd, req.params.email, req.params.companyname], (err, req) => {
                 if (err) console.log(err);
                 console.log(req)
                 res.send({success: "ok"});

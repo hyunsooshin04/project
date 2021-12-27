@@ -5,12 +5,12 @@
     <div class="login">
       <h2>Log-in</h2>
       <div class="login_id">
-        <h4>E-mail</h4>
-        <input type="email" name="" id="" placeholder="Email">
+        <h4>Id</h4>
+        <input type="email" v-model="id" placeholder="Email">
       </div>
       <div class="login_pw">
         <h4>Password</h4>
-        <input type="password" name="" id="" placeholder="Password">
+        <input type="password" v-model="pwd" placeholder="Password">
       </div>
       <div class="login_etc">
         <div class="sign_up">
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="submit">
-        <input type="submit" value="submit">
+        <button v-on:click="Login">submit</button>
       </div>
     </div>
   </div>
@@ -29,7 +29,28 @@
 
 <script>
 export default {
-  name: "Login"
+  name: "Login",
+  data() {
+    return {
+      id: "",
+      pwd: "",
+      isLogin: "",
+    }
+  },
+  methods: {
+    Login(e) {
+      e.preventDefault();
+      this.axios.get('http://localhost:3000/api/login/' + this.id + "/" + this.pwd)
+          .then((res) => {
+            this.isLogin = res.data.isLogin;
+            this.name = res.data.name;
+            this.id = res.data.id;
+            if (this.isLogin == 'id') alert("ID가 틀렸습니다.");
+            if (this.isLogin == 'pwd') alert("Pw가 틀렸습니다.");
+            if (this.isLogin == 'true') alert("로그인 성공")
+          })
+    }
+  }
 }
 </script>
 
@@ -119,7 +140,8 @@ h2 {
   margin-top: 50px;
   width: 80%;
 }
-.submit input {
+
+.submit button {
   width: 100%;
   height: 50px;
   border: 0;

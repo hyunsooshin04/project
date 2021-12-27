@@ -29,6 +29,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="terminal" />
+    <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2021.1.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -45,7 +46,7 @@
       <option name="presentableId" value="Default" />
       <updated>1639698129798</updated>
       <workItem from="1639699206254" duration="1650000" />
-      <workItem from="1640584220276" duration="657000" />
+      <workItem from="1640584220276" duration="5162000" />
     </task>
     <servers />
   </component>

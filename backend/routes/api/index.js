@@ -6,6 +6,8 @@ router.all('*', (req, res, next) => {
     next();
 })
 
+
+
 router.get("/myinfo/:id", lg.myinfor);
 
 router.post("/edit/", lg.edit)

@@ -1,12 +1,30 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-view />
   </div>
-  <router-view />
 </template>
+<script>
+export default {
+  data() {
+    return {
 
+    }
+  },
+  methods: {
+    login() {
+      this.$store.commit('Login')
+    },
+    logout() {
+      this.$store.commit('Logout')
+    }
+  }
+}
+</script>
 <style>
+*{
+  padding: 0;
+  margin: 0;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -16,7 +34,7 @@
 }
 
 #nav {
-  padding: 30px;
+
 }
 
 #nav a {

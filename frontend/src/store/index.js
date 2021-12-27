@@ -1,8 +1,17 @@
 import { createStore } from "vuex";
 
 export default createStore({
-  state: {},
-  mutations: {},
+  state: {
+    isLogin: false,
+  },
+  mutations: {
+    Login(state) {
+      state.isLogin = true;
+    },
+    Logout(state) {
+      state.isLogin = false;
+    }
+  },
   actions: {},
   modules: {},
 });

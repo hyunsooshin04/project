@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from "vue-router";
-import Home from "../views/Home.vue";
 import { store } from "../store/index";
 
 const requireAuth = () => (to, from, next) => {
@@ -13,7 +12,7 @@ const routes = [
     {
         path: "/",
         name: "Home",
-        component: Home,
+        component: () => import('../views/page/list')
     },
     {
         path: "/about",

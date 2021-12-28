@@ -116,18 +116,18 @@ export default {
       } else if (this.check == false) {
         alert("개인 정보 수집 이용에 동의해 주세요.")
       } else {
-        this.axios.get('http://localhost:3000/api/signup/' + this.id + '/' + this.pwd + '/' + this.name + '/' + this.email + '/' + this.companyname)
+        this.axios.get('http://10.26.143.66:3000/api/signup/' + this.id + '/' + this.pwd + '/' + this.name + '/' + this.email + '/' + this.companyname)
             .then((res) => {
               if (res.data.success == "ok") {
                 alert("회원가입이 완료되었습니다.")
-                location.href = "http://localhost:4000/login"
+                location.href = "http://10.26.143.66:4000/login"
               }
             })
       }
     },
     id_overlap_search(e) {
       e.preventDefault();
-      this.axios.get('http://localhost:3000/api/login/' + this.id)
+      this.axios.get('http://10.26.143.66:3000/api/login/' + this.id)
           .then((res) => {
             ;
             if (res.data.id_overlap == true) {
@@ -142,7 +142,7 @@ export default {
     email_send(e) {
       e.preventDefault();
       alert("메일을 확인해주세요.");
-      this.axios.get('http://localhost:3000/api/email/' + this.email)
+      this.axios.get('http://10.26.143.66:3000/api/email/' + this.email)
           .then((res) => {
             this.code = res.data.code;
           })

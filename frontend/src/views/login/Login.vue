@@ -40,7 +40,7 @@ export default {
   methods: {
     Login(e) {
       e.preventDefault();
-      this.axios.get('http://localhost:3000/api/login/' + this.id + "/" + this.pwd)
+      this.axios.get('http://10.26.143.66:3000/api/login/' + this.id + "/" + this.pwd)
           .then((res) => {
             this.isLogin = res.data.isLogin;
             this.name = res.data.name;

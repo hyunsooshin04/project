@@ -11,6 +11,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Vue Single File Component" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -48,6 +49,7 @@
       <workItem from="1639699206254" duration="1650000" />
       <workItem from="1640584220276" duration="5162000" />
       <workItem from="1640594022952" duration="901000" />
+      <workItem from="1640646538361" duration="10687000" />
     </task>
     <servers />
   </component>

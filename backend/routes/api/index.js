@@ -6,21 +6,14 @@ router.all('*', (req, res, next) => {
     next();
 })
 
-router.get("/myinfo/:id", lg.myinfor);
-
-router.post("/edit/", lg.edit)
-
 router.get("/signup/:id/:pwd/:name/:email/:companyname", lg.signup);
 
 router.get("/login/:id/:password", lg.login);
 
-router.get("/login/:id", lg.pwsearch);
+router.get("/login/:id", lg.id_overlap_search);
 
-router.get("/login/:id/:answer/:pwd", lg.editpwd);
+router.get("/email/:email", lg.email);
 
-router.get("/userinfo/:id/:userid", lg.userinfo)
-
-router.get("/userinfo/update/:id/:level", lg.updatelevel)
 
 router.use("/board", board); //board router 적용
 

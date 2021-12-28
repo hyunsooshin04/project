@@ -3,8 +3,7 @@
     <div class="container">
       <div class="form_txtInput">
         <h2 class="sub_tit_txt">회원가입</h2>
-        <p class="exTxt" style="padding: 2px;border-bottom: 1px solid rgb(255, 77, 46)">회원가입시 이메일 인증을 반드시 진행하셔야
-          합니다.</p>
+        <p class="exTxt" style="padding: 2px;border-bottom: 1px solid rgb(255, 77, 46)"></p>
         <div class="join_form">
           <table>
             <colgroup>
@@ -14,35 +13,42 @@
             <tbody>
             <tr>
               <th><span>아이디</span></th>
-              <td><input type="text" id="input_id_value" placeholder="ID 를 입력하세요.">
-                <button id="id_overlap_search">ID 중복 체크</button>
+              <td><input type="text" v-model="id" id="input_id_value" placeholder="ID 를 입력하세요.">
+                <button id="id_overlap_search" v-on:click="id_overlap_search" v-if="!id_overlap_ck">ID 중복 체크</button>
+                <button id="id_overlap_search_ok" v-on:click="id_overlap_search" v-if="id_overlap_ck">ID 중복 체크</button>
               </td>
 
             </tr>
             <tr>
               <th><span>이름</span></th>
-              <td><input type="text" placeholder=""></td>
+              <td><input type="text" v-model="name" placeholder="이름을 입력해주세요."></td>
+            </tr>
+            <tr>
+              <th><span>회사 이름</span></th>
+              <td><input type="text" v-model="companyname" placeholder="회사이름을 입력해주세요"></td>
             </tr>
             <tr>
               <th><span>비밀번호</span></th>
-              <td><input type="password" id="pwd_input" placeholder="비밀번호를 입력해주세요."></td>
+              <td><input type="password" v-model="pwd" id="pwd_input" placeholder="비밀번호를 입력해주세요."></td>
             </tr>
             <tr>
               <th><span>비밀번호 확인</span></th>
-              <td><input type="password" id="pwd_confirm_input" placeholder="비밀번호를 확인하세요"></td>
+              <td><input type="password" v-model="pwd_ck" id="pwd_confirm_input" placeholder="비밀번호를 확인하세요"></td>
             </tr>
             <tr class="email">
               <th><span>이메일</span></th>
               <td>
-                <input type="text" id="input_email_value" class="email" placeholder="이메일을 입력해주세요.">
+                <input type="text" v-model="email" id="input_email_value" class="email" placeholder="이메일을 입력해주세요.">
 
-                <button id="confirm_mail_send">인증메일 발송</button>
+                <button v-on:click="email_send" id="confirm_mail_send">인증메일 발송</button>
               </td>
             </tr>
             <tr>
               <th><span>인증번호 확인</span></th>
-              <td><input type="text" id="send_email_confirm" class="send_number" placeholder="10:00" disabled>
-                <button id="mail_confirm">인증메일 확인</button>
+              <td><input type="text" v-model="email_ck" id="send_email_confirm" class="send_number"
+                         placeholder="인증번호를 입력해주세요.">
+                <button id="mail_confirm" @click="mail_ck">인증메일 확인</button>
+                <br>
               </td>
             </tr>
             <!--          <tr>-->
@@ -55,7 +61,7 @@
         </div><!-- join_form E  -->
         <div class="agree_wrap">
           <div class="checkbox_wrap mar27">
-            <input type="checkbox" id="marketing" name="marketing" class="agree_chk">
+            <input type="checkbox" id="marketing" name="marketing" class="agree_chk" v-model="check">
             <label for="marketing">[필수] 회원가입 및 로그인 목적 개인정보 수집 및 이용에 대한 동의</label>
             <ul class="explan_txt">
               <li><span class="red_txt">항목 : 성별, 생년월일</span></li>
@@ -67,7 +73,7 @@
           </div>
         </div>
         <div class="btn_wrap">
-          <a href="login.html">다음</a>
+          <a href="javascript:void(0)" v-on:click="signup_complete">회원가입 완료</a>
         </div>
       </div> <!-- form_txtInput E -->
     </div><!-- content E-->
@@ -76,7 +82,94 @@
 
 <script>
 export default {
-  name: "SignUp"
+  name: "SignUp",
+  data() {
+    return {
+      id: "",
+      pwd: "",
+      pwd_ck: "",
+      email: "",
+      email_ck: "",
+      name: "",
+      id_overlap_ck: false,
+      password_check: false,
+      email_check: false,
+      signup: false,
+      code: "",
+      companyname: "",
+      check: false,
+    }
+  },
+  methods: {
+    signup_complete(e) {
+      e.preventDefault();
+      if (!this.id_overlap_ck) {
+        alert("아이디 중복 체크를 해주세요.")
+      } else if (this.name == "") {
+        alert("이름을 입력해주세요.")
+      } else if (this.companyname == "") {
+        alert("회사 이름을 입력해주세요.")
+      } else if (this.pwd != this.pwd_ck) {
+        alert("비밀번호와 비밀번호 확인이 틀립니다.")
+      } else if (!this.email_check) {
+        alert("이메일 인증을 해주세요.")
+      } else if (this.check == false) {
+        alert("개인 정보 수집 이용에 동의해 주세요.")
+      } else {
+        this.axios.get('http://localhost:3000/api/signup/' + this.id + '/' + this.pwd + '/' + this.name + '/' + this.email + '/' + this.companyname)
+            .then((res) => {
+              if (res.data.success == "ok") {
+                alert("회원가입이 완료되었습니다.")
+                location.href = "http://localhost:4000/login"
+              }
+            })
+      }
+    },
+    id_overlap_search(e) {
+      e.preventDefault();
+      this.axios.get('http://localhost:3000/api/login/' + this.id)
+          .then((res) => {
+            ;
+            if (res.data.id_overlap == true) {
+              alert("아이디가 중복입니다.")
+            }
+            if (res.data.id_overlap == false) {
+              alert("아이디를 사용할수 있습니다.");
+              this.id_overlap_ck = true;
+            }
+          })
+    },
+    email_send(e) {
+      e.preventDefault();
+      alert("메일을 확인해주세요.");
+      this.axios.get('http://localhost:3000/api/email/' + this.email)
+          .then((res) => {
+            this.code = res.data.code;
+          })
+      document.getElementById('send_email_confirm').disabled = false;
+      document.getElementById('mail_confirm').style.background = "#f95427";
+      document.getElementById('mail_confirm').disabled = false;
+
+    },
+    mail_ck(e) {
+      e.preventDefault();
+      if (this.code == this.email_ck) {
+        alert("인증 완료")
+        this.email_check = true;
+      } else {
+        alert("인증 실패")
+      }
+    }
+  },
+  watch: {
+    id() {
+      this.id_overlap_ck = false;
+    },
+  },
+  mounted() {
+    document.getElementById('send_email_confirm').disabled = true;
+    document.getElementById('mail_confirm').disabled = true;
+  }
 }
 </script>
 
@@ -311,7 +404,7 @@ ul {
 }
 
 .join_form table input.email {
-  width: 162px;
+  width: 383px;
   display: inline-block;
 }
 
@@ -341,7 +434,7 @@ ul {
 }
 
 .join_form table input.send_number {
-  width: 383px;
+  width: 162px;
 }
 
 .join_form table th span {
@@ -693,12 +786,27 @@ ul {
   height: 48px;
   margin: 5px 0 0 0px;
   border: 1px solid #cfcfcf;
+  background: #f95427;
+  color: black;
+  text-align: center;
+  vertical-align: top;
+  line-height: 50px;
+}
+
+#id_overlap_search_ok {
+  display: inline-block;
+  float: left;
+  width: 115px;
+  height: 48px;
+  margin: 5px 0 0 0px;
+  border: 1px solid #cfcfcf;
   background: #dedede;
   color: #626262;
   text-align: center;
   vertical-align: top;
   line-height: 50px;
 }
+
 #mail_confirm {
   display: inline-block;
   float: left;
@@ -720,8 +828,8 @@ ul {
   height: 48px;
   margin: 5px 0 0 0px;
   border: 1px solid #cfcfcf;
-  background: #dedede;
-  color: #626262;
+  background: #f95427;
+  color: black;
   text-align: center;
   vertical-align: top;
   line-height: 50px;

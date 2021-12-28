@@ -1,2 +1,2 @@
-./node_modules/
-./config/sendInfo.json/
+node_modules
+sendInfo.json

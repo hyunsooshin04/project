@@ -1,23 +1,28 @@
 <template>
-  <h1 class="con">사용자</h1>
+  <h1 class="con">{{ company }}</h1>
   <hr class="one">
   <section class="article-list table-common con">
-    <div id="test">
-      <form>
-        <button id="search_btn">검색</button>
-        <input type="search" id="input1" value="" placeholder="검색어를 입력하세요.">
-        <button id="create_btn">생성</button>
-        <button id="delete_btn">삭제</button>
-      </form>
-      <div id="create_text">
-        <input type="text" id="create_name" placeholder="사용자 이름">
-        <input type="text" id="create_group" placeholder="그룹">
-        <input type="text" id="create_email" placeholder="Email">
-        <input type="text" id="create_id" placeholder="사용자 ID">
-        <input type="text" id="create_work" placeholder="직급">
-        <input type="text" id="create_sex" placeholder="성별">
-        <button id="create_exit">완료</button>
-      </div>
+    <div class="searchWrap">
+      <input type="text" class="Search_input" placeholder="검색어를 입력해주세요."/>
+      <button class="btn">검색</button>
+      <br>
+      <h3><span>정렬 기준 : </span>
+        <select id="select_box">
+          <option value="">그룹</option>
+          <option value="">직급</option>
+        </select></h3>
+      <button class="btn" v-on:click="create_btn">생성</button>
+      <button class="btn">삭제</button>
+    </div>
+    <div id="create_text" v-if="create">
+      <input type="text" id="create_name" placeholder="사용자 이름">
+      <input type="text" id="create_group" placeholder="그룹">
+      <input type="text" id="create_email" placeholder="Email">
+      <input type="text" id="create_id" placeholder="사용자 ID">
+      <input type="text" id="create_pwd" placeholder="사용자 비밀번호">
+      <input type="text" id="create_work" placeholder="직급">
+      <input type="text" id="create_sex" placeholder="성별">
+      <button class="btn">생성하기</button>
     </div>
     <table border="1">
       <thead>
@@ -47,6 +52,11 @@
         <td>{{ row.rank }}</td>
         <td>{{ row.gender }}</td>
       </tr>
+      <tr v-if="list.length == 0">
+        <td></td>
+        <td></td>
+        <td>데이터가 없습니다.</td>
+      </tr>
       </tbody>
     </table>
   </section>
@@ -60,12 +70,17 @@ export default {
       body: "",
       id: "",
       list: "",
+      company: "",
+      create: false,
     }
   },
   mounted() {
     this.getList();
   },
   methods: {
+    create_btn() {
+      this.create = !this.create
+    },
     getCookie(cName) {
       cName = cName + '=';
       var cookieData = document.cookie;
@@ -86,11 +101,15 @@ export default {
       this.axios.get('http://10.26.143.66:3000/api/list', {params: this.body})
           .then((res) => {
             this.list = res.data.list;
+            this.company = res.data.company;
           })
     }
   },
   created() {
     this.id = this.getCookie("id");
+    if (this.id == "") {
+      location.href = "http://localhost:4000/login"
+    }
   }
 }
 </script>
@@ -100,11 +119,32 @@ html {
   font-family: "Noto Sans KR", sans-serif;
 }
 
+.searchWrap {
+  border: 1px solid #888;
+  border-radius: 5px;
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 40px;
+}
+
+.searchWrap input {
+  width: 60%;
+  height: 36px;
+  border-radius: 3px;
+  padding: 0 10px;
+  border: 1px solid #888;
+}
+
 /* 노말라이즈 */
 body, ul, li, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+select {
+  width: 150px;
+  height: 30px;
 }
 
 form {
@@ -125,20 +165,9 @@ h1.con {
   margin: 4px;
 }
 
-#input1 {
-  width: 300px;
-  height: 30px;
-  margin: 4px;
-}
-
-#create_btn {
-  width: 50px;
-  height: 30px;
-  margin: 4px;
-}
-
-#delete_btn {
-  width: 50px;
+.btn {
+  padding-left: 5px;
+  padding-right: 5px;
   height: 30px;
   margin: 4px;
 }
@@ -166,6 +195,12 @@ h1.con {
 }
 
 #create_id {
+  width: 200px;
+  height: 30px;
+  margin: 4px;
+}
+
+#create_pwd {
   width: 200px;
   height: 30px;
   margin: 4px;
@@ -235,5 +270,9 @@ hr.one {
 .article-list > table thead {
   border-bottom: 2px solid lightgray;
   background-color: #F5F5F5;
+}
+
+.Search_input {
+  margin: 5px
 }
 </style>

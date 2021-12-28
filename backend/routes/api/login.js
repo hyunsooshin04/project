@@ -21,6 +21,7 @@ exports.email = (req, res) => {
 exports.login = (req, res) => {
     sql = " SELECT * FROM admin_id WHERE ID = ?";
     conn.query(sql, [req.params.id], (err, log) => {
+        if (err) console.log(err);
             try {
                 if (log[0].id == req.params.id) {
                     if (log[0].pwd == req.params.password) {
@@ -36,7 +37,6 @@ exports.login = (req, res) => {
 }
 
 exports.signup = (req, res) => {
-    console.log("test")
     sql = " INSERT INTO `admin_id` (id, pwd, name, email, companyname) values (?, ?, ?, ?, ?)";
     conn.query(sql, [req.params.id, req.params.pwd, req.params.name, req.params.email, req.params.companyname], (err, req) => {
         if (err) console.log(err);

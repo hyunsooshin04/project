@@ -50,6 +50,7 @@ export default {
             if (this.isLogin == 'true') {
               alert("로그인 성공")
               document.cookie = "id=" + this.id;
+              location.href = "http://localhost:4000"
             }
           })
     }

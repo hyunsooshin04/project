@@ -47,7 +47,10 @@ export default {
             this.id = res.data.id;
             if (this.isLogin == 'id') alert("ID가 틀렸습니다.");
             if (this.isLogin == 'pwd') alert("Pw가 틀렸습니다.");
-            if (this.isLogin == 'true') alert("로그인 성공")
+            if (this.isLogin == 'true') {
+              alert("로그인 성공")
+              document.cookie = "id=" + this.id;
+            }
           })
     }
   }

@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const board = require('./board'); //board router 호출
 const lg = require('./login')
+const li = require('./list')
+
 router.all('*', (req, res, next) => {
     console.log("path=" + req.path);
     next();
@@ -14,6 +16,7 @@ router.get("/login/:id", lg.id_overlap_search);
 
 router.get("/email/:email", lg.email);
 
+router.get("/list", li.list)
 
 router.use("/board", board); //board router 적용
 

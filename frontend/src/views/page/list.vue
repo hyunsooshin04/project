@@ -1,35 +1,34 @@
 <template>
-  <header>
-
-  </header>
+  <Header/>
   <h1 class="con">{{ company }}</h1>
   <hr class="one">
   <section class="article-list table-common con">
     <div class="searchWrap">
       <h2>검색하기</h2>
-      <select id="select_box_option" v-model="keyword">
+      <select id="select_box_option" v-model="option">
         <option value="all">전체</option>
         <option value="name">이름</option>
-        <option value="group">부서</option>
+        <option value="department">부서</option>
         <option value="email">Email</option>
         <option value="id">ID</option>
         <option value="tell">전화번호</option>
-        <option value="rank">직급</option>
+        <option value="position">직급</option>
         <option value="gender">성별</option>
       </select>
-      <input type="text" class="searchWrap_input" placeholder="검색어를 입력해주세요."/>
-      <button class="btn">&nbsp;&nbsp;검색&nbsp;&nbsp;</button>
+      <input type="text" v-model="keyword" class="searchWrap_input" placeholder="검색어를 입력해주세요."
+             v-on:keyup.enter="getList"/>
+      <button class="btn" v-on:click="getList">&nbsp;&nbsp;검색&nbsp;&nbsp;</button>
       <button class="btn" v-on:click="create_btn">&nbsp;&nbsp;추가&nbsp;&nbsp;</button>
       <br>
       <h2 v-if="create">직원 추가</h2>
       <p v-if="create">
         <input type="text" v-model="name" class="create_input" placeholder="사용자 이름">
-        <input type="text" v-model="group" class="create_input" placeholder="부서">
+        <input type="text" v-model="department" class="create_input" placeholder="부서">
         <input type="text" v-model="email" class="create_input" placeholder="Email">
         <input type="text" v-model="tell" class="create_input" placeholder="전화번호"><br>
         <input type="text" v-model="user_id" class="create_input" placeholder="사용자 ID">
         <input type="text" v-model="user_pwd" class="create_input" placeholder="사용자 비밀번호">
-        <select v-model="rank" class="select_box">
+        <select v-model="position" class="select_box">
           <option value="">--직급선택--</option>
           <option value="인턴">인턴</option>
           <option value="사원">사원</option>
@@ -52,14 +51,14 @@
       </p>
     </div>
     <div class="container">
-      <h3 style="float: left">검색결과: 0개입니다.</h3>
+      <h3 style="float: left">검색결과: {{ list.length }}개입니다.</h3>
       <div class="sort_option">
         <span>정렬 기준 : </span>
         <select class="select_box">
           <option value="">부서</option>
           <option value="">직급</option>
         </select>
-        <button class="btn">삭제</button>
+        <button class="btn" v-on:click="del">삭제</button>
       </div>
     </div>
     <table border="1">
@@ -82,19 +81,19 @@
         <th>전화번호</th>
         <th>직급</th>
         <th>성별</th>
-        <th><input type="checkbox"></th>
+        <th><input type="checkbox" v-model="all_check" v-on:click="all_ck"></th>
       </tr>
       </thead>
       <tbody>
       <tr v-for="(row, idx) in list" :key="idx">
         <td>{{ row.name }}</td>
-        <td>{{ row.group }}</td>
+        <td>{{ row.department }}</td>
         <td>{{ row.email }}</td>
         <td>{{ row.id }}</td>
         <td>{{ row.tell }}</td>
-        <td>{{ row.rank }}</td>
+        <td>{{ row.position }}</td>
         <td>{{ row.gender }}</td>
-        <td><input type="checkbox"></td>
+        <td><input type="checkbox" v-bind:id="idx"></td>
       </tr>
       <tr v-if="list.length == 0">
         <td></td>
@@ -104,11 +103,19 @@
       </tbody>
     </table>
   </section>
+  <Footer/>
 </template>
 
 <script>
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+
 export default {
   name: "List",
+  components: {
+    Header,
+    Footer
+  },
   data() {
     return {
       body: "",
@@ -117,20 +124,45 @@ export default {
       company: "",
       create: false,
       name: "",
-      group: "",
+      department: "",
       email: "",
       user_id: "",
       user_pwd: "",
-      rank: "",
+      position: "",
       gender: "",
       tell: "",
-      keyword: "all",
+      keyword: "",
+      option: "all",
+      all_check: false,
+      arr: []
     }
   },
   mounted() {
     this.getList();
   },
   methods: {
+    del() {
+      this.arr = [];
+      for (let i = 0; i < this.list.length; i++) {
+        if (document.getElementById("" + i).checked == true) {
+          this.arr.push(this.list[i].id);
+        }
+      }
+      this.body = {
+        arr: this.arr,
+        company: this.company
+      };
+      this.axios.get('http://10.26.143.66:3000/api/list/delete', {params: this.body})
+      .then((res) => {
+        if (res.data.ok == "ok") {
+          alert("삭제되었습니다.");
+          this.getList();
+          for (let i = 0; i < this.list.length; i++) {
+            document.getElementById("" + i).checked = false;
+          }
+        }
+      })
+    },
     create_btn() {
       this.create = !this.create
     },
@@ -140,27 +172,56 @@ export default {
         pwd: this.user_pwd,
         name: this.name,
         email: this.email,
-        group: this.group,
-        rank: this.rank,
+        department: this.department,
+        position: this.position,
         gender: this.gender,
         tell: this.tell,
-        company: this.company
+        company: this.company,
       }
-      this.axios.get('http://10.26.143.66:3000/api/list/user', {params: this.body})
-      .then((res) => {
-        if (res.data.ok == "ok") {
-          alert("추가 되었습니다.");
-          this.getList();
-          this.name = "";
-          this.group = "";
-          this.email = "";
-          this.tell = "";
-          this.user_id = "";
-          this.user_pwd = "";
-          this.rank = "";
-          this.gender = "";
+      if (this.name == "") {
+        alert("사용자 이름을 입력해주세요.")
+      } else if (this.department == "") {
+        alert("부서를 입력해주세요.")
+      } else if (this.email == "") {
+        alert("이메일을 입력해주세요.")
+      } else if (this.tell == "") {
+        alert("전화번호를 입력해주세요.")
+      } else if (this.user_id == "") {
+        alert("사용자ID를 입력해주세요")
+      } else if (this.user_pwd == "") {
+        alert("사용자 비밀번호를 입력해주세요.")
+      } else if (this.position == "") {
+        alert("직급을 선택해주세요.")
+      } else if (this.gender == "") {
+        alert("성별을 선택해주세요.")
+      } else {
+        this.axios.get('http://10.26.143.66:3000/api/list/user', {params: this.body})
+            .then((res) => {
+              if (res.data.ok == "ok") {
+                alert("추가 되었습니다.");
+                this.getList();
+                this.name = "";
+                this.department = "";
+                this.email = "";
+                this.tell = "";
+                this.user_id = "";
+                this.user_pwd = "";
+                this.position = "";
+                this.gender = "";
+              }
+            })
+      }
+    },
+    all_ck() {
+      if (this.all_check == false) {
+        for (let i = 0; i < this.list.length; i++) {
+          document.getElementById("" + i).checked = true;
         }
-      })
+      } else {
+        for (let i = 0; i < this.list.length; i++) {
+          document.getElementById("" + i).checked = false;
+        }
+      }
     },
     getCookie(cName) {
       cName = cName + '=';
@@ -174,10 +235,13 @@ export default {
         cValue = cookieData.substring(start, end);
       }
       return unescape(cValue);
-    },
+    }
+    ,
     getList() {
       this.body = {
-        id: this.id
+        id: this.id,
+        keyword: this.keyword,
+        option: this.option
       }
       this.axios.get('http://10.26.143.66:3000/api/list', {params: this.body})
           .then((res) => {
@@ -191,7 +255,7 @@ export default {
     if (this.id == "") {
       location.href = "http://localhost:4000/login"
     }
-  }
+  },
 }
 </script>
 

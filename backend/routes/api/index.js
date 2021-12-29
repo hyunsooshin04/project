@@ -12,6 +12,8 @@ router.get("/signup/:id/:pwd/:name/:email/:companyname", lg.signup);
 
 router.get("/login/:id/:password", lg.login);
 
+router.get("/list/user", li.create_user)
+
 router.get("/login/:id", lg.id_overlap_search);
 
 router.get("/email/:email", lg.email);

@@ -6,6 +6,13 @@ exports.list = (req, res) => {
     const body = req.query;
     let company = "";
     let where = "";
+    let sort = "";
+
+    if (body.sort == "department") sort += ` ORDER BY department DESC, name DESC, id `
+    else if (body.sort == "position") sort += ` ORDER BY position DESC, name DESC, id `
+    else if (body.sort == "name") sort += ` ORDER BY name DESC, name DESC, id `
+
+
     if (body.option == "all") {
         if (body.keyword != "") {
             where += ` AND name like '%${body.keyword}%' or tell like '%${body.keyword}%' or id like '%${body.keyword}%' or gender like '%${body.keyword}%' or email like '%${body.keyword}%' or position like '%${body.keyword}%' or department like '%${body.keyword}%'`;
@@ -43,7 +50,8 @@ exports.list = (req, res) => {
     conn.query(sql, (body.id), (err, log) => {
         if (err) console.log(err);
         try {
-            sql = ` SELECT * FROM user_id WHERE company = ? ${where}`;
+            sql = ` SELECT * FROM user_id WHERE company = ? ${where} ${sort}`;
+            console.log(sql)
             if (err) console.log(err);
             company = log[0].companyname;
             conn.query(sql, (log[0].companyname), (err, log) => {

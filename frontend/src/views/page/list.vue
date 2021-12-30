@@ -51,12 +51,13 @@
       </p>
     </div>
     <div class="container">
-      <h3 style="float: left">검색결과: {{ list.length }}개입니다.</h3>
+      <h3 style="float: left">검색결과: {{ tmp.length }}개입니다.</h3>
       <div class="sort_option">
         <span>정렬 기준 : </span>
-        <select class="select_box">
-          <option value="">부서</option>
-          <option value="">직급</option>
+        <select class="select_box" v-model="sort">
+          <option value="department">부서</option>
+          <option value="position">직급</option>
+          <option value="name">이름</option>
         </select>
         <button class="btn" v-on:click="del">삭제</button>
       </div>
@@ -93,7 +94,7 @@
         <td>{{ row.tell }}</td>
         <td>{{ row.position }}</td>
         <td>{{ row.gender }}</td>
-        <td><input type="checkbox" v-bind:id="idx"></td>
+        <td><input type="checkbox" v-bind:id="idx" v-on:click="all_ck_checker"></td>
       </tr>
       <tr v-if="list.length == 0">
         <td></td>
@@ -102,6 +103,14 @@
       </tr>
       </tbody>
     </table>
+    <div id="btn_group">
+      <button id="first_btn" v-on:click="pagination(0)">&lt;&lt;</button>
+      <button v-on:click="pagination( '' + row / 10)" v-for="(row, idx) in page_array" :key="idx">{{
+          row / 10 + 1
+        }}
+      </button>
+      <button id="last_btn" v-on:click="pagination('' + page_array.length - 1)">&gt;&gt;</button>
+    </div>
   </section>
   <Footer/>
 </template>
@@ -134,11 +143,23 @@ export default {
       keyword: "",
       option: "all",
       all_check: false,
-      arr: []
+      arr: [],
+      ck: true,
+      sort: "department",
+      start_page: 0,
+      page_count: 0,
+      page_array: [],
+      end_page: 0,
+      tmp: []
     }
   },
   mounted() {
     this.getList();
+  },
+  watch: {
+    sort() {
+      this.getList();
+    }
   },
   methods: {
     del() {
@@ -153,15 +174,28 @@ export default {
         company: this.company
       };
       this.axios.get('http://10.26.143.66:3000/api/list/delete', {params: this.body})
-      .then((res) => {
-        if (res.data.ok == "ok") {
-          alert("삭제되었습니다.");
-          this.getList();
-          for (let i = 0; i < this.list.length; i++) {
-            document.getElementById("" + i).checked = false;
-          }
+          .then((res) => {
+            if (res.data.ok == "ok") {
+              alert("삭제되었습니다.");
+              this.getList();
+              for (let i = 0; i < this.list.length; i++) {
+                document.getElementById("" + i).checked = false;
+              }
+            }
+          })
+    },
+    all_ck_checker() {
+      this.ck = true;
+      for (let i = 0; i < this.list.length; i++) {
+        if (document.getElementById("" + i).checked == false) {
+          this.ck = false;
         }
-      })
+      }
+      if (this.ck) {
+        this.all_check = true;
+      } else {
+        this.all_check = false;
+      }
     },
     create_btn() {
       this.create = !this.create
@@ -241,13 +275,37 @@ export default {
       this.body = {
         id: this.id,
         keyword: this.keyword,
-        option: this.option
+        option: this.option,
+        sort: this.sort
       }
       this.axios.get('http://10.26.143.66:3000/api/list', {params: this.body})
           .then((res) => {
-            this.list = res.data.list;
+            this.list = [];
+            this.tmp = res.data.list;
             this.company = res.data.company;
+            this.page_count = res.data.list.length;
+            this.page_count = parseInt(this.page_count / 10) + (this.page_count % 10 != 0 ? 1 : 0);
+            this.page_array = [];
+            for (let i = 0; i < this.page_count; i++) {
+              this.page_array.push(i * 10);
+            }
+
+            if (this.page_array.length - 1 == this.start_page) {
+              this.end_page = (this.start_page * 10) + (this.tmp.length % 10 == 0 ? 10 : this.tmp.length % 10);
+            } else this.end_page = this.start_page * 10 + 10;
+
+            for (let i = this.start_page * 10; i < this.end_page; i++) {
+              this.list.push(this.tmp[i]);
+            }
+            for (let i = 0; i < this.list.length; i++) {
+              document.getElementById("" + i).checked = false;
+            }
+            this.all_check = false;
           })
+    },
+    pagination(n) {
+      this.start_page = n;
+      this.getList();
     }
   },
   created() {
@@ -391,5 +449,24 @@ hr.one {
 
 .container {
   width: 100%;
+}
+
+#first_btn {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+#last_btn {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#btn_group button {
+  border: 1px solid teal;
+  background-color: teal;
+  color: white;
+  padding: 5px;
+  height: 38px;
+  margin-top: 10px;
 }
 </style>

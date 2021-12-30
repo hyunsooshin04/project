@@ -3,25 +3,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <div class="wrap">
     <div class="login">
-      <h2>Log-in</h2>
+      <h2>로그인</h2>
       <div class="login_id">
-        <h4>Id</h4>
-        <input type="email" v-model="id" placeholder="Email">
+        <h4>ID</h4>
+        <input type="email" v-model="id" placeholder="아이디">
       </div>
       <div class="login_pw">
         <h4>Password</h4>
-        <input type="password" v-model="pwd" v-on:keyup.enter="Login" placeholder="Password">
+        <input type="password" v-model="pwd" v-on:keyup.enter="Login" placeholder="비밀번호">
       </div>
       <div class="login_etc">
         <div class="sign_up">
-          <a href="">Sign Up</a>
+          <a href="" style="color: #ffeba7">회원가입</a>
         </div>
         <div class="forgot_pw">
-          <a href="">Forgot Password?</a>
+          <a href="" style="color: #ffeba7">Forgot Password?</a>
         </div>
       </div>
       <div class="submit">
-        <button v-on:click="Login">submit</button>
+        <button v-on:click="Login" class="button">로그인</button>
       </div>
     </div>
   </div>
@@ -68,7 +68,7 @@ export default {
 
 a {
   text-decoration: none;
-  color: black;
+  color: #ffeba7;
 }
 
 li {
@@ -81,13 +81,13 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: skyblue;
+  background:#1f2029;
 }
 
 .login {
   width: 30%;
   height: 600px;
-  background: white;
+  background: #2a2b38;
   border-radius: 20px;
   display: flex;
   justify-content: center;
@@ -96,13 +96,14 @@ li {
 }
 
 h2 {
-  color: tomato;
+  color: #ffeba7;
   font-size: 2em;
 }
 
 .login_id {
   margin-top: 20px;
   width: 80%;
+  color: #ffeba7;
 }
 
 .login_id input {
@@ -118,6 +119,7 @@ h2 {
 .login_pw {
   margin-top: 20px;
   width: 80%;
+  color: #ffeba7;
 }
 
 .login_pw input {
@@ -138,11 +140,28 @@ h2 {
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
+  color: #ffeba7;
 }
 
 .submit {
   margin-top: 50px;
   width: 80%;
+}
+
+.button {
+  transition-property:all;/*속성값*/
+  transition-duration:0.3s;/*효과를 완료하는데 걸리는 시간*/
+  transition-timing-function:ease-in-out;/*효과의 속도곡선*/
+  transition-delay:0;/*효과의 지연되는 시간*/
+}
+.button:hover{
+  /*마우스 오버했을때의 효과*/
+  background:#102770;
+  color:#ffeba7;
+  transition-property:all;/*속성값*/
+  transition-duration:0.3s;/*효과를 완료하는데 걸리는 시간*/
+  transition-timing-function:ease-in-out;/*효과의 속도곡선*/
+  transition-delay:0;/*효과의 지연되는 시간*/
 }
 
 .submit button {
@@ -151,8 +170,8 @@ h2 {
   border: 0;
   outline: none;
   border-radius: 40px;
-  background: linear-gradient(to left, rgb(255, 77, 46), rgb(255, 155, 47));
-  color: white;
+  background: #ffeba7;
+  color: #2a2b38;
   font-size: 1.2em;
   letter-spacing: 2px;
 }

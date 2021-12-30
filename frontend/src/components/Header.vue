@@ -20,7 +20,7 @@ header {
   height: 75px;
   padding: 1rem;
   color: white;
-  background: teal;
+  background: #2a2b38;
   font-weight: bold;
   display: flex;
   justify-content: space-between;

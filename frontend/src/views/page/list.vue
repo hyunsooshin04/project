@@ -387,7 +387,21 @@ h1.con {
   padding-right: 5px;
   height: 38px;
   margin: 4px;
+  transition-property:all;/*속성값*/
+  transition-duration:0.3s;/*효과를 완료하는데 걸리는 시간*/
+  transition-timing-function:ease-in-out;/*효과의 속도곡선*/
+  transition-delay:0;/*효과의 지연되는 시간*/
 }
+.btn:hover{
+  /*마우스 오버했을때의 효과*/
+  background:black;
+  color: white;
+  transition-property:all;/*속성값*/
+  transition-duration:0.3s;/*효과를 완료하는데 걸리는 시간*/
+  transition-timing-function:ease-in-out;/*효과의 속도곡선*/
+  transition-delay:0;/*효과의 지연되는 시간*/
+}
+
 
 hr.one {
   width: 80%;
@@ -462,8 +476,8 @@ hr.one {
 }
 
 #btn_group button {
-  border: 1px solid teal;
-  background-color: teal;
+  border: 1px solid #2a2b38;
+  background-color: #2a2b38;
   color: white;
   padding: 5px;
   height: 38px;
